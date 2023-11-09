@@ -4,25 +4,26 @@ import {Thread, ThreadSchema} from "@/utils/models/Thread";
 import {ThreadCard} from "@/app/home/thread-card";
 import {Profile, ProfileSchema} from "@/utils/models/Profile";
 import {ThreadForm} from "@/app/home/thread-form";
+import {fetchSession} from "@/utils/fetchSession";
 
 
 
 export default async function () {
     const {threads, profiles} = await getData()
-    console.log(profiles)
+
+    const session = fetchSession()
+
+
     return (
         <>
             <main className="container lg:w-2/3 grid pt-5 mx-auto">
-                <div className="col-span-full p-0 border border-base-content">
-                    <ThreadForm />
-                </div>
+                    <ThreadForm session={session} />
                 <div className="col-span-full border border-base-content">
                     <div className="card bg-neutral rounded-none border-white text-neutral-content">
                         {threads.map(thread => <ThreadCard key={thread.threadId} profile={profiles[thread.threadProfileId]} thread={thread}/>)}
                     </div>
                 </div>
             </main>
-
         </>
     )
 }

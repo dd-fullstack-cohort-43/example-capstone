@@ -17,6 +17,8 @@ import {Status} from "../../utils/interfaces/Status";
 export async function signInController (request: Request, response: Response): Promise<Response> {
   try {
 
+    console.log(request)
+
     // validate the new profile data coming from the request body
     const validationResult = signInProfileSchema.safeParse(request.body)
 

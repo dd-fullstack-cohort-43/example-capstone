@@ -20,7 +20,13 @@ export async function POST(request: Request){
 
     result.status === 200 ? result.type = "alert alert-success" : result.type = "alert alert-danger"
 
-    const clientResponse = NextResponse.json({work: "god dammit"})
+    const clientResponse = NextResponse.next({})
+
+  let jwtToken = responseFromServer.headers.get("Authorization")
+
+  if (jwtToken) {
+    clientResponse.cookies.set("jwt-token", jwtToken, {maxAge: 3 * 60 * 60 *1000, httpOnly: true})
+  }
 
 
     const serverCookies = responseFromServer.headers.get("Set-Cookie")
@@ -29,11 +35,6 @@ export async function POST(request: Request){
         clientResponse.headers.set("Set-Cookie", serverCookies)
     }
 
-    let jwtToken = responseFromServer.headers.get("Authorization")
-
-    if (jwtToken) {
-        clientResponse.cookies.set("jwt-token", jwtToken, {maxAge: 3 * 60 * 60 *1000, httpOnly: true})
-    }
 
    // Response
     return clientResponse
