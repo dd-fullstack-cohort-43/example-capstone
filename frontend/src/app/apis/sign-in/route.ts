@@ -20,7 +20,7 @@ export async function POST(request: Request){
 
     result.status === 200 ? result.type = "alert alert-success" : result.type = "alert alert-danger"
 
-    const clientResponse = NextResponse.next({})
+    const clientResponse = NextResponse.json(result)
 
   let jwtToken = responseFromServer.headers.get("Authorization")
 

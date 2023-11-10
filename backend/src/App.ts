@@ -15,6 +15,7 @@ import {imageRoute} from "./apis/image/image.route";
 import {profileRoute} from "./apis/profile/profile.route";
 import {keywordRoute} from "./apis/keyword/keyword.route";
 import {tagRoute} from "./apis/tag/tag.route";
+import {earlGreyRoute} from "./apis/earl-grey/earl-grey.route";
 
 // The following class creates the app and instantiates the server
 export class App {
@@ -56,6 +57,7 @@ export class App {
   // private method for setting up routes in their basic sense (ie. any route that performs an action on profiles starts with /profiles)
   private routes (): void {
     this.app.use(indexRoute.basePath, indexRoute.router)
+    this.app.use(earlGreyRoute.basePath, earlGreyRoute.router)
     this.app.use(tagRoute.basePath, tagRoute.router)
     this.app.use(signUpRoute.basePath, signUpRoute.router)
     this.app.use(signInRoute.basePath, signInRoute.router)

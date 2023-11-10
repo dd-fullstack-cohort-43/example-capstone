@@ -4,15 +4,16 @@ import {Thread, ThreadSchema} from "@/utils/models/Thread";
 import {ThreadCard} from "@/app/home/thread-card";
 import {Profile, ProfileSchema} from "@/utils/models/Profile";
 import {ThreadForm} from "@/app/home/thread-form";
-import {fetchSession} from "@/utils/fetchSession";
+import {fetchSession, getSession} from "@/utils/fetchSession";
 
 
 
 export default async function () {
     const {threads, profiles} = await getData()
 
-    const session = fetchSession()
+    const session = await getSession()
 
+    console.log("session in home", session)
 
     return (
         <>

@@ -2,36 +2,33 @@ import {Profile, ProfileSchema} from "@/utils/models/Profile";
 import {cookies} from "next/headers";
 import {jwtDecode} from "jwt-decode";
 
-
 export type Session = {
-    profile: Profile,
-    authorization: string
+	profile: Profile,
+	authorization: string
+	exp: number
+}
+
+export async function getSession(): Promise<Session> {
+	const result = fetch(`/apis/earl-grey`, {next: {revalidate: 0}}).then(response => {
+		response.json()
+	})
+	console.log("result", result)
 }
 
 
-let auth: Session | undefined
+export function setSession(jwtToken: string) : Session | undefined {
+	try {
+		const parsedJwtToken = jwtDecode(jwtToken) as any
 
-export function fetchSession() {
-
-  //check to see if the jwt-token cookie is set
-  const cookiesStore = cookies()
-  const unparsedJwtToken = cookiesStore.get("jwt-token")
-
-
-
-  //if unparsedJwtToken is undefined the user is no longer signed in set session to null
-  if(unparsedJwtToken === undefined) {
-    auth = undefined
-  }
+			return {
+				profile: ProfileSchema.parse(parsedJwtToken.auth),
+				authorization: jwtToken,
+				exp: parsedJwtToken.exp
+			}
 
 
-   // if auth is undefined and unparsedJwtToken is defined then parse the jwtToken and set auth
-    if (auth === undefined && unparsedJwtToken) {
-            const parsedJwtToken = jwtDecode(unparsedJwtToken.value) as any
-             return {
-                profile: ProfileSchema.parse(parsedJwtToken.auth),
-                authorization: unparsedJwtToken.value
-            }
-    }
-    return auth
+	} catch (error) {
+
+	return undefined
+	}
 }
