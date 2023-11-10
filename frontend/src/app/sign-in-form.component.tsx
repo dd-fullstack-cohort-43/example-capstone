@@ -15,19 +15,22 @@ export function SignInFormComponent() {
 
     const handleSubmit = (values: SignIn, actions: FormikHelpers<SignIn>) => {
         const {setStatus, resetForm} = actions
-        const result = fetch('/apis/sign-in', {
+        const result = fetch('/api/sign-in', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(values)
         }).then(response => response.json()).then(json => {
+            let type = 'alert alert-danger'
             if(json.status === 200) {
                 resetForm()
+                type = 'alert alert-success'
             }
-            setStatus({type: json.type, message: json.message})
+            setStatus({type, message: json.message})
         })
     }
+
 
     return(
         <>
@@ -52,8 +55,6 @@ function SignInFormContent(props: FormikProps<SignIn>) {
         values,
         errors,
         touched,
-        dirty,
-        isSubmitting,
         handleChange,
         handleBlur,
         handleSubmit,

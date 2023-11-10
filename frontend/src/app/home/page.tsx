@@ -1,19 +1,18 @@
 "use server"
-import Image from "next/image";
+import {cookies} from "next/headers";
 import {Thread, ThreadSchema} from "@/utils/models/Thread";
 import {ThreadCard} from "@/app/home/thread-card";
 import {Profile, ProfileSchema} from "@/utils/models/Profile";
 import {ThreadForm} from "@/app/home/thread-form";
-import {fetchSession, getSession} from "@/utils/fetchSession";
+import {getSession} from "@/utils/fetchSession";
 
 
 
 export default async function () {
+    const session = await getSession()
     const {threads, profiles} = await getData()
 
-    const session = await getSession()
 
-    console.log("session in home", session)
 
     return (
         <>
@@ -30,13 +29,16 @@ export default async function () {
 }
 
 async function getData():Promise<{threads: Thread[], profiles:{[index:string]: Profile}}> {
-    const result = await fetch(`${process.env.REST_API_URL}/apis/thread`)
+    const result = await fetch(`${process.env.PUBLIC_API_URL}/apis/thread`)
         .then(response=> { console.log(response.status)
             if (response.status === 200 || response.status === 304) {
                 return response.json()
             }
             throw new Error("retrieving data failed")
-        }).catch(error => {console.error(error)})
+        })
+    console.log(result)
+
+
     const threads =ThreadSchema.array().parse(result?.data)
 
     const profiles: {[index:string]: Profile} = {}
@@ -44,7 +46,7 @@ async function getData():Promise<{threads: Thread[], profiles:{[index:string]: P
     //{"9d23b0c0-3d60-420c-9785-c3a077add0cd": Profile}
 
     for(let thread of threads) {
-        const result = await fetch(`${process.env.REST_API_URL}/apis/profile/${thread.threadProfileId}`) .then(response=> { console.log(response.status)
+        const result = await fetch(`${process.env.PUBLIC_API_URL}/apis/profile/${thread.threadProfileId}`) .then(response=> { console.log(response.status)
             if (response.status === 200 || response.status === 304) {
                 return response.json()
             }
