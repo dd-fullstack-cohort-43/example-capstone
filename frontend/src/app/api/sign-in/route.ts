@@ -17,7 +17,7 @@ export async function POST(request: Request){
 		}
 	)
 
-	const response = await responseFromServer.clone()
+	const response =  responseFromServer.clone()
 
 	const authorization = response.headers.get("authorization")
 	console.log(authorization)

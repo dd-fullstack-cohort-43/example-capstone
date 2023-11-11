@@ -20,7 +20,7 @@ const nextConfig = {
     return [
       {
         source: '/apis/:path*',
-        destination: `http://instructors.ddfullstack.xyz:8080/apis/:path*`
+        destination: `${process.env.REST_API_URL}/apis/:path*`
         // Proxy to Backend
       }
     ]
