@@ -39,17 +39,22 @@ export class App {
   // private method that sets the port for the sever, to one from index.route.ts, and external .env file or defaults to 3000
   public settings (): void {
     this.app.set('port', this.port)
+    this.app.set("trust proxy",true)
   }
 
   // private method to setting up the middleware to handle json responses, one for dev and one for prod
   private middlewares (): void {
+
     this.app.use(morgan('dev'))
     this.app.use(express.json())
     this.app.use(session({
       store: this.redisStore,
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET as string,
-      resave: false
+      resave: false,
+      cookie: {
+        sameSite: "none",
+      }
 
     }))
   }

@@ -8,10 +8,11 @@ import {DisplayError} from "@/components/displayError";
 import {toFormikValidationSchema} from "zod-formik-adapter";
 import {Profile} from "@/utils/models/Profile";
 import {Session} from "@/utils/fetchSession";
+import React from "react";
+import {useDropzone} from "react-dropzone";
 
 
 const formSchema = ThreadSchema.pick({threadContent: true})
-type  Values = z.infer<typeof formSchema>
 
 type ThreadFormProps = {
    session : Session|undefined
@@ -27,12 +28,15 @@ export function ThreadForm(props : ThreadFormProps) {
 
     const initialValues = {
         threadContent: "",
+        images: ""
     };
+
+
 
     const formSchema = ThreadSchema.pick({threadContent: true})
     type  Values = z.infer<typeof formSchema>
 
-    const handleSubmit = (values: Values, actions: FormikHelpers<Values>) => {
+    const handleSubmit = (values: Values, actions: FormikHelpers<any>) => {
         const {setStatus, resetForm} = actions
         fetch('/apis/thread', {
             method: "POST",
@@ -65,7 +69,7 @@ export function ThreadForm(props : ThreadFormProps) {
 }
 
 
-function ThreadFormContent(props: FormikProps<Values>) {
+function ThreadFormContent(props: any) {
 
     const {
         status,
@@ -99,6 +103,7 @@ function ThreadFormContent(props: FormikProps<Values>) {
                     </textarea>
                 </div>
                 <DisplayError errors={errors} touched={touched} field={"threadContent"}/>
+                <ImageDropZone formikProps={{fieldValue:"images", onChange: handleChange, onBlur: handleBlur, setFieldValue: props.setFieldValue}} />
                 <div className="form-control">
                     <button type="submit" className="btn btn-accent">
                         Submit
@@ -106,6 +111,34 @@ function ThreadFormContent(props: FormikProps<Values>) {
                 </div>
             </form>
         </>
+    )
+}
+
+export type ImageDropZoneProps = {
+    formikProps: any
+}
+
+function ImageDropZone (ImageDropZoneProps: ImageDropZoneProps) {
+    const {formikProps} = ImageDropZoneProps
+    const onDrop = React.useCallback((acceptedFiles:any) => {
+
+
+        const formData = new FormData()
+        formData.append('image', acceptedFiles[0])
+
+
+        formikProps.setFieldValue(formikProps.fieldValue, formData)
+
+
+    }, [formikProps])
+    const { getRootProps, getInputProps } = useDropzone({ onDrop })
+
+
+    return (
+      <div {...getRootProps()}>
+          <input {...getInputProps()} />
+          <p>Drag 'n' drop some files here, or click to select files</p>
+      </div>
     )
 }
 

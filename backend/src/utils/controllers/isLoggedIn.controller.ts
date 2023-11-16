@@ -40,3 +40,22 @@ export function isLoggedInController(request: Request, response: Response, next:
 
 }
 
+export function isSessionActive(request: Request, response: Response, nextFunction: NextFunction) : Response | void {
+
+    console.log(request.headers)
+
+
+    const profile: PublicProfile | undefined = request.session?.profile
+
+    console.log(profile)
+
+    if (profile === undefined) {
+        return response.json({status: 401, message: 'Please login', data: null})
+    }
+
+    nextFunction()
+
+}
+
+
+
